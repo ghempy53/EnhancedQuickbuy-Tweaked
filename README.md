@@ -2,7 +2,7 @@
 
 A personal customization of the **Enhanced Quickbuy** mod for Deadlock, packaged as a single VPK.
 
-[Download the VPK](enhanced_quickbuy_souls_needed.vpk) · [Review and verification notes](REVIEW.txt)
+[Download the VPK](pak07_dir.vpk) · [Review and verification notes](REVIEW.txt)
 
 ## What changed
 
@@ -32,7 +32,7 @@ The footer retains the original queue-total calculation, including upgrade handl
 
 ## Replacing an existing installation
 
-Close Deadlock and back up the installed Enhanced Quickbuy VPK outside the game's mod folder. Replace it with `enhanced_quickbuy_souls_needed.vpk`, using the installed file's existing name, then relaunch. Load only one version at a time. Restore the backup to revert.
+Close Deadlock and back up the installed Enhanced Quickbuy VPK outside the game's mod folder. Replace it with `pak07_dir.vpk`, using the installed file's existing name, then relaunch. Load only one version at a time. Restore the backup to revert.
 
 ## Verification status
 

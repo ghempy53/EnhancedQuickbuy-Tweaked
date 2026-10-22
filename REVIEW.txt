@@ -3,7 +3,7 @@ Review date: 2026-10-22
 
 ARTIFACT
 
-File: enhanced_quickbuy_souls_needed.vpk
+File: pak07_dir.vpk
 Size: 103008 bytes
 SHA-256:
 6fae0464dd212a61969e2d26dde6ce8786650797922e02dd610fda93355dfb63
