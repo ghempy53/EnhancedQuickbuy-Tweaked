@@ -4,11 +4,12 @@ Review date: 2026-10-22
 ARTIFACT
 
 File: pak07_dir.vpk
-Size: 103008 bytes
+Size: 99367 bytes
 SHA-256:
-6fae0464dd212a61969e2d26dde6ce8786650797922e02dd610fda93355dfb63
+35221af589cb121a3d678a78c7ab5bf4fb4ec898d344134529f799e9dd5b9794
 
-This report covers the current package, including the next-item-only HUD.
+This report covers the current package with a top Total Cost box, no footer
+cost box, and the next-item-only gameplay HUD.
 Local checks passed. The latest build has not been verified in Deadlock.
 
 IMPLEMENTED BEHAVIOR
@@ -20,12 +21,15 @@ IMPLEMENTED BEHAVIOR
   position are retained.
 - Queue rows retain the normal soul icon and item price. The added slash
   and cumulative amount are hidden in the item entry's own stylesheet.
-- The top shop box is labeled Souls Needed and displays:
+- The top shop box is labeled Total Cost and uses the original full-queue
+  calculation, including upgrades and estimated sale credits. Current held
+  souls do not reduce that total. An empty queue displays zero unless the
+  box is disabled in settings.
+- The gameplay HUD amount remains:
   max(0, next purchase price - current souls - estimated queued-sale proceeds).
-  It remains visible at zero, including an empty queue, unless disabled in
-  settings.
-- Total Cost appears in the lower-right footer opposite Clear Queue, outside
-  both scrolling lists. It uses the original queue-total calculation.
+  No separate next-item amount is displayed in the shop.
+- The bottom total box is removed entirely. Its creation code, visibility
+  handling, footer space reservation, and Clear Queue width limit are gone.
 - Existing pricing functions, the 0.1-second refresh, and native purchase,
   sale, removal, reorder, and clear handlers are retained.
 
@@ -39,10 +43,10 @@ The VPK contains the same five resource paths as the original mod:
   panorama/styles/hud_quickbuy.vcss_c                 modified
   panorama/styles/hud_quickbuy_entry.vcss_c           modified
 
-The script repurposes the shop summary and creates the footer. Styles hide
-the extra row prices, icon count labels, and additional HUD previews, and
-style the shop displays. The final next-item-only change appends one rule
-to hide the extra-preview container; it changes no script or positioning.
+The script restores the original shop-total display and removes the obsolete
+Souls needed in shop option. The native layout already supplies the Total
+Cost heading. Styles hide extra row prices, icon count labels, and additional
+HUD previews, and keep the top box readable when the queue is empty.
 
 Both compiled layouts are byte-for-byte original. The builder preserves
 non-DATA resource blocks and the original CSS prefix, updates lengths and
@@ -58,10 +62,10 @@ LOCAL VERIFICATION RECORDED DURING DEVELOPMENT
 - Resource bounds, offsets, alignment, and modified CSS content CRCs passed.
 - Source 2 Viewer 20.1 verified the VPK and decompiled all five resources.
 - The extracted script matched the tested source and passed syntax checking.
-- All 27 mocked integration tests passed. Coverage includes affordability,
+- All 28 mocked integration tests passed. Coverage includes affordability,
   empty and sales-only queues, single-counted sale credits, rounding, upgrade
   ordering, component consumption, native price changes, queue changes,
-  settings, refreshes, footer uniqueness, and row-fraction visibility.
+  settings, refreshes, absence of a footer cost box, and row-fraction visibility.
 - HUD checks cover count-label removal and next-item-only visibility with
   queue sizes 0, 1, 3, 5, and 12 and saved preview counts 1-5. They also check
   retained next-item positioning, soul updates, and shop queue contents.
@@ -89,23 +93,28 @@ inspected during development used integer placeholders; the parity test
 does not establish support for abbreviated values.
 
 Settings: the Items shown slider remains exposed but cannot restore extra
-HUD previews in this build. Shop display toggles retain their saved values.
+HUD previews in this build. Total queue cost in shop controls the top box
+using its saved value. The obsolete Souls needed in shop option is removed;
+its legacy saved key is still accepted for hidden row labels but cannot
+control the total box or gameplay HUD amount.
 
 Source maps: preserved CSS mappings cover the original text, not appended
 rules. This limits source-level diagnostics for the added styles.
 
 IN-GAME CHECKLIST
 
-1. Queue an 800-soul item with 300 souls: Souls Needed should show 500.
-2. Add a queued sale priced at 400: its 200-soul estimate should reduce
-   Souls Needed to 300. Confirm proceeds are not counted twice.
-3. Reach affordability, then clear the queue: the top box should stay
-   visible and show 0 in both cases.
-4. Reorder, remove, buy, and sell items. Confirm both cost displays update and
-   check an upgrade against its actual price with an owned component.
-5. Fill and scroll a long queue. Confirm row prices have no fraction and
-   the footer stays visible without covering items, the scrollbar, or Clear Queue.
+1. Queue an 800-soul item with 300 souls. The top Total Cost should show 800;
+   close the shop and confirm the gameplay HUD amount is 500.
+2. Add a queued sale priced at 400. Its 200-soul estimate should reduce
+   Total Cost to 600 and the gameplay HUD amount to 300.
+3. Increase held souls to 600: Total Cost should remain 600 while the HUD
+   amount reaches 0. Clear the queue: the top total should show 0.
+4. Reorder, remove, buy, and sell items. Confirm the values update and check
+   an upgrade against its actual price with an owned component.
+5. Fill and scroll a long queue. Confirm row prices have no fraction, there
+   is no bottom total box, and Clear Queue has its normal space.
 6. Close the shop with at least three items queued. Only the next icon and
    its soul amount should appear beside the item slots, with no count over
    the icon. Buy/remove the first item and confirm the icon advances.
-7. Reopen the shop. Confirm the full queue and both cost boxes remain available.
+7. Reopen the shop. Confirm the full queue and single top Total Cost box.
+   Toggle Total queue cost in shop and confirm it controls that box.
