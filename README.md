@@ -6,7 +6,7 @@ A personal customization of the **Enhanced Quickbuy** mod for Deadlock, packaged
 
 ## What changed
 
-- **One item on the gameplay HUD.** Only the next queued item and its soul amount appear beside the item slots. Extra previews and the number over the next item's icon are hidden. Its position, background, and readiness effects are retained.
+- **One item on the gameplay HUD.** Only the next queued item and its soul amount appear beside the item slots. Extra previews, the count number, and its blue corner patch are hidden. The next item's position, soul counter, and ready-to-buy border/glow are retained.
 - **Simpler queue prices.** Item rows show their normal soul icon and price, without the added slash and cumulative amount.
 - **Total Cost at the top of the shop queue.** The original top box shows the full-queue total and remains visible at `0` when the queue is empty. There is no footer cost box or duplicate next-item amount in the shop.
 
@@ -36,4 +36,4 @@ Close Deadlock and back up the installed Enhanced Quickbuy VPK outside the game'
 
 The current package passed archive integrity checks, Source 2 Viewer verification/decompilation, and **28 mocked integration tests** during development. These checks cover calculations, refresh behavior, panel structure, and selected CSS visibility rules; they do not render Deadlock.
 
-The latest build has **not been verified in-game**. See [REVIEW.txt](REVIEW.txt) for the artifact hash, limitations, and a short in-game checklist. This repository contains the packaged mod and documentation; the development scripts and test harness are not included.
+The preceding build was reported working in-game by the maintainer on 2026-10-22. This corner-patch removal has **not yet been checked in-game**. See [REVIEW.txt](REVIEW.txt) for the artifact hash, limitations, and a short in-game checklist. This repository contains the packaged mod and documentation; the development scripts and test harness are not included.

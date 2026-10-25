@@ -1,24 +1,26 @@
 EnhancedQuickbuy-Tweaked — current build review
-Review date: 2026-10-22
+Review date: 2026-10-24
 
 ARTIFACT
 
 File: pak07_dir.vpk
-Size: 99367 bytes
+Size: 99511 bytes
 SHA-256:
-35221af589cb121a3d678a78c7ab5bf4fb4ec898d344134529f799e9dd5b9794
+141be010a5ce00cee0c2c3a9a615ca09f12061bc13b2fae4d368337f8b033e86
 
 This report covers the current package with a top Total Cost box, no footer
 cost box, and the next-item-only gameplay HUD.
-Local checks passed. The latest build has not been verified in Deadlock.
+Local checks passed. The preceding build (d5816c7) was reported working
+in-game by the maintainer on 2026-10-22. The corner-patch removal in this
+build has not yet been checked in Deadlock.
 
 IMPLEMENTED BEHAVIOR
 
 - The gameplay HUD shows only the native next-item icon and its soul amount.
   Extra previews (items 2-5 and their soul labels) are hidden, including when
   Universal Mod Manager has a saved Items shown value above 1. The next
-  icon's count labels are hidden; its background, readiness effects, and
-  position are retained.
+  icon's count labels and blue corner badge are hidden. Its ready-to-buy
+  border/glow, soul counter, background, and position are retained.
 - Queue rows retain the normal soul icon and item price. The added slash
   and cumulative amount are hidden in the item entry's own stylesheet.
 - The top shop box is labeled Total Cost and uses the original full-queue
@@ -45,8 +47,11 @@ The VPK contains the same five resource paths as the original mod:
 
 The script restores the original shop-total display and removes the obsolete
 Souls needed in shop option. The native layout already supplies the Total
-Cost heading. Styles hide extra row prices, icon count labels, and additional
-HUD previews, and keep the top box readable when the queue is empty.
+Cost heading. Styles hide extra row prices, the icon count labels and corner
+badge, and additional HUD previews, and keep the top box readable when the
+queue is empty. This revision adds only a visibility rule for the corner
+badge. The script, both layouts, and item stylesheet match the preceding
+build byte-for-byte; the ready-state border and pulse rules are unchanged.
 
 Both compiled layouts are byte-for-byte original. The builder preserves
 non-DATA resource blocks and the original CSS prefix, updates lengths and
@@ -66,7 +71,8 @@ LOCAL VERIFICATION RECORDED DURING DEVELOPMENT
   empty and sales-only queues, single-counted sale credits, rounding, upgrade
   ordering, component consumption, native price changes, queue changes,
   settings, refreshes, absence of a footer cost box, and row-fraction visibility.
-- HUD checks cover count-label removal and next-item-only visibility with
+- HUD checks cover corner-badge/count removal, retained border/pulse and
+  soul-counter styling, and next-item-only visibility with
   queue sizes 0, 1, 3, 5, and 12 and saved preview counts 1-5. They also check
   retained next-item positioning, soul updates, and shop queue contents.
 
@@ -114,7 +120,8 @@ IN-GAME CHECKLIST
 5. Fill and scroll a long queue. Confirm row prices have no fraction, there
    is no bottom total box, and Clear Queue has its normal space.
 6. Close the shop with at least three items queued. Only the next icon and
-   its soul amount should appear beside the item slots, with no count over
-   the icon. Buy/remove the first item and confirm the icon advances.
+   its soul amount should appear beside the item slots, with no count or
+   blue corner patch over the icon. When ready to buy, confirm its border/glow
+   remains. Buy/remove the first item and confirm the icon advances.
 7. Reopen the shop. Confirm the full queue and single top Total Cost box.
    Toggle Total queue cost in shop and confirm it controls that box.
