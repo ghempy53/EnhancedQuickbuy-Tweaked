@@ -1,127 +1,135 @@
-EnhancedQuickbuy-Tweaked — current build review
+EnhancedQuickbuy-Tweaked — 4:3 HUD compatibility build
 Review date: 2026-10-24
 
 ARTIFACT
 
 File: pak07_dir.vpk
-Size: 99511 bytes
+Size: 101522 bytes
 SHA-256:
-141be010a5ce00cee0c2c3a9a615ca09f12061bc13b2fae4d368337f8b033e86
+8e2e447b22269fa449acfa80b32aaceb9e0abda0a0977b13d8ad6ce7ac66a4cc
 
-This report covers the current package with a top Total Cost box, no footer
-cost box, and the next-item-only gameplay HUD.
-Local checks passed. The preceding build (d5816c7) was reported working
-in-game by the maintainer on 2026-10-22. The corner-patch removal in this
-build has not yet been checked in Deadlock.
+Local checks passed. On 2026-10-24, the maintainer reported this exact
+compatibility build working in-game and authorized its release to main.
+This is user-reported testing, separate from the automated local checks.
+The preceding build (2aada2c) was also reported working in-game.
 
-IMPLEMENTED BEHAVIOR
+COMPATIBILITY FINDING AND CHANGE
 
-- The gameplay HUD shows only the native next-item icon and its soul amount.
-  Extra previews (items 2-5 and their soul labels) are hidden, including when
-  Universal Mod Manager has a saved Items shown value above 1. The next
-  icon's count labels and blue corner badge are hidden. Its ready-to-buy
-  border/glow, soul counter, background, and position are retained.
-- Queue rows retain the normal soul icon and item price. The added slash
-  and cumulative amount are hidden in the item entry's own stylesheet.
-- The top shop box is labeled Total Cost and uses the original full-queue
-  calculation, including upgrades and estimated sale credits. Current held
-  souls do not reduce that total. An empty queue displays zero unless the
-  box is disabled in settings.
-- The gameplay HUD amount remains:
+Companion: [CNS UPDATE] 4x3 Fixes [bytenode ver.], version 1.0.3.
+Page: https://gamebanana.com/mods/693388
+Supplied ZIP: 4x3_fixes_byte_6672f.zip
+Contained VPK: pak48_dir.vpk, with 18 compiled CSS resources.
+
+Both previous packages supplied panorama/styles/hud_quickbuy.vcss_c.
+The companion's stylesheet imports its native base and applies two 4:3
+position rules. It lacks Enhanced Quickbuy's added panel styles. If it
+wins that shared path, the missing styles could explain the reported text
+without working UI. This is a confirmed file conflict and a plausible cause
+of the symptom; the friend's precise failure has not been reproduced.
+
+This build gives Enhanced Quickbuy a private stylesheet path and points
+its own compiled layout directly to it. It does not import the shared
+quickbuy stylesheet, which could introduce unrelated native layout changes.
+Two appended rules align the two-card shop summary and queue at a 17px left
+margin under AspectRatio4x3. Other aspect ratios retain prior positioning.
+The companion's other HUD and shop fixes remain independently packaged.
+No companion resources are copied into this VPK.
+
+PRESERVED BEHAVIOR
+
+- Gameplay HUD: only the next queued item and its soul amount. Additional
+  previews, count labels, and blue corner badge stay hidden. The next
+  item's ready-to-buy border/glow and soul counter are retained.
+- Queue rows: normal soul icon and item price; no slash/cumulative amount.
+- Shop: top Total Cost box with the original full-queue calculation,
+  including upgrades and estimated sale credits. Current held souls do
+  not reduce that total. The empty queue shows zero when the box is enabled.
+  No footer total or separate next-item amount appears in the shop.
+- Gameplay amount:
   max(0, next purchase price - current souls - estimated queued-sale proceeds).
-  No separate next-item amount is displayed in the shop.
-- The bottom total box is removed entirely. Its creation code, visibility
-  handling, footer space reservation, and Clear Queue width limit are gone.
-- Existing pricing functions, the 0.1-second refresh, and native purchase,
-  sale, removal, reorder, and clear handlers are retained.
+- Pricing, 0.1-second refresh, and native purchase, sale, removal, reorder,
+  and clear handlers are unchanged from the tested main build.
 
-RESOURCE AND PACKAGING REVIEW
+RESOURCE REVIEW: DIFFERENCES FROM PREVIOUS MAIN BUILD
 
-The VPK contains the same five resource paths as the original mod:
+  panorama/layout/hud_quickbuy.vxml_c
+    Exactly one stylesheet reference changes to the private path below.
+  panorama/layout/hud_quickbuy_entry.vxml_c
+    Byte-identical.
+  panorama/scripts/hud_quickbuy_total_summary.vjs_c
+    Byte-identical.
+  panorama/styles/eqb_quickbuy.vcss_c
+    Renamed from hud_quickbuy.vcss_c. Previous CSS preserved verbatim;
+    only two scoped 4:3 alignment rules appended.
+  panorama/styles/hud_quickbuy_entry.vcss_c
+    Byte-identical.
 
-  panorama/layout/hud_quickbuy.vxml_c                 unchanged
-  panorama/layout/hud_quickbuy_entry.vxml_c           unchanged
-  panorama/scripts/hud_quickbuy_total_summary.vjs_c   modified
-  panorama/styles/hud_quickbuy.vcss_c                 modified
-  panorama/styles/hud_quickbuy_entry.vcss_c           modified
+The main layout's LaCo block uses binary KV3 v5 with LZ4 compression.
+The build changes one decoded string-table entry and re-encodes its buffer
+as valid LZ4. Other decoded bytes and the second compressed buffer remain
+unchanged. Resource sizes and block lengths are updated. The reconstructed
+XML and complete LaCo tree differ by exactly one stylesheet reference.
+Main-layout RED2 and DATA blocks are byte-identical to the previous build.
 
-The script restores the original shop-total display and removes the obsolete
-Souls needed in shop option. The native layout already supplies the Total
-Cost heading. Styles hide extra row prices, the icon count labels and corner
-badge, and additional HUD previews, and keep the top box readable when the
-queue is empty. This revision adds only a visibility rule for the corner
-badge. The script, both layouts, and item stylesheet match the preceding
-build byte-for-byte; the ready-state border and pulse rules are unchanged.
+CSS rebuilding preserves source-map and other non-DATA blocks, updates
+content CRC/lengths, and retains 16-byte block alignment. VPK CRC32 and MD5
+sections are rebuilt and independently checked.
 
-Both compiled layouts are byte-for-byte original. The builder preserves
-non-DATA resource blocks and the original CSS prefix, updates lengths and
-checksums, and maintains 16-byte resource-block alignment. A padding issue
-found during the earlier review was corrected before this build.
+LOCAL VERIFICATION
 
-The original input VPK was preserved. Its SHA-256 is:
+- Source 2 Viewer 20.1 verified the archive and decompiled all five resources.
+- VPK file CRC32 values and MD5 sections passed.
+- Resource bounds, offsets, 16-byte alignment, and CSS DATA CRCs passed.
+- Zero shared resource paths with the companion's 18 resources, versus
+  one shared stylesheet path in the previous build.
+- Combining the two archive maps in either order produces identical bytes.
+  Our layout's packaged includes and the companion's base imports resolve.
+  This checks file resolution, not engine style scoping or native rendering.
+- All 30 mocked integration tests passed. Existing 28 cover pricing,
+  affordability, queue changes, upgrades, sale-credit rounding and single
+  counting, settings, refreshes, row prices, next-item-only HUD visibility,
+  and retained ready-state border/pulse and soul counter.
+- Two added regressions check 4:3 header/queue alignment with single and
+  nested shop-state ancestors and empty/long queues, plus unchanged
+  positioning rules for 16:9, 16:10, and 21:9.
+- The header's declared CSS width is 385px and its left margin is 17px.
+  These are static values, not measured native Panorama geometry.
+- Independent reviews found no actionable packaging or compatibility-code
+  defects. Their local review was followed by the maintainer's report of
+  successful in-game testing on 2026-10-24.
+
+Original unmodified VPK preserved. Its SHA-256 is:
 3bfdb4990a849f35f42d91621bff0f01fc66c46e501234b9c3e05514b15218c2
 
-LOCAL VERIFICATION RECORDED DURING DEVELOPMENT
-
-- Archive file CRC32 values and VPK MD5 sections passed validation.
-- Resource bounds, offsets, alignment, and modified CSS content CRCs passed.
-- Source 2 Viewer 20.1 verified the VPK and decompiled all five resources.
-- The extracted script matched the tested source and passed syntax checking.
-- All 28 mocked integration tests passed. Coverage includes affordability,
-  empty and sales-only queues, single-counted sale credits, rounding, upgrade
-  ordering, component consumption, native price changes, queue changes,
-  settings, refreshes, absence of a footer cost box, and row-fraction visibility.
-- HUD checks cover corner-badge/count removal, retained border/pulse and
-  soul-counter styling, and next-item-only visibility with
-  queue sizes 0, 1, 3, 5, and 12 and saved preview counts 1-5. They also check
-  retained next-item positioning, soul updates, and shop queue contents.
-
-The repository contains the packaged mod and documentation, not the build
-scripts or test harness used for these checks.
+Previous main-build VPK preserved. Its SHA-256 is:
+141be010a5ce00cee0c2c3a9a615ca09f12061bc13b2fae4d368337f8b033e86
 
 LIMITATIONS
 
-The tests use mocked Panorama APIs and a limited CSS selector matcher.
-They do not verify native rendering, font metrics, scrolling, overlap at
-different UI scales, automatic icon advancement, or other HUD mods.
+Tests use mocked Panorama APIs and a limited CSS selector matcher. They
+cannot establish rendering, font metrics, clipping, overlap, scroll behavior,
+or live interaction with the companion HUD. The maintainer subsequently
+reported in-game success for this compatibility build; the report does not
+itemize every checklist step or resolution. This change does not promise
+compatibility with every other HUD or every resolution.
 
-Owned components: pricing reads the game's ModCost label. Tests supply a
-discounted native price; they do not prove that the live game supplies the
-expected discount in every upgrade case. No second discount is applied.
+Inherited pricing reads the game's ModCost label for owned-component
+discounts; no second inventory discount is applied. Upgrade mappings use
+English item names and can become stale. Sale estimates remain half the
+displayed price, rounded down; full-refund windows are not modeled. The
+integer parser does not handle abbreviated amounts such as 1.6k.
 
-Recipes and sales: the inherited upgrade mappings use English item names
-and can become stale after game updates. Sale estimates remain half the
-displayed price, rounded down; full-refund windows are not modeled.
+The Items shown setting remains exposed but extra previews stay hidden.
+Total queue cost in shop controls the top Total Cost box. The obsolete
+Souls needed in shop option remains removed; its legacy saved key cannot
+change the top total or gameplay amount.
 
-Number formatting: the inherited parser expects integer-formatted labels.
-It does not correctly parse abbreviations such as 1.6k. Native resources
-inspected during development used integer placeholders; the parity test
-does not establish support for abbreviated values.
+Preserved source maps cover original CSS, not appended rules. This limits
+source-level diagnostics for additions. Development sources and test
+harnesses are in this chat workspace, not the packaged Git repository.
 
-Settings: the Items shown slider remains exposed but cannot restore extra
-HUD previews in this build. Total queue cost in shop controls the top box
-using its saved value. The obsolete Souls needed in shop option is removed;
-its legacy saved key is still accepted for hidden row labels but cannot
-control the total box or gameplay HUD amount.
+IN-GAME TEST
 
-Source maps: preserved CSS mappings cover the original text, not appended
-rules. This limits source-level diagnostics for the added styles.
-
-IN-GAME CHECKLIST
-
-1. Queue an 800-soul item with 300 souls. The top Total Cost should show 800;
-   close the shop and confirm the gameplay HUD amount is 500.
-2. Add a queued sale priced at 400. Its 200-soul estimate should reduce
-   Total Cost to 600 and the gameplay HUD amount to 300.
-3. Increase held souls to 600: Total Cost should remain 600 while the HUD
-   amount reaches 0. Clear the queue: the top total should show 0.
-4. Reorder, remove, buy, and sell items. Confirm the values update and check
-   an upgrade against its actual price with an owned component.
-5. Fill and scroll a long queue. Confirm row prices have no fraction, there
-   is no bottom total box, and Clear Queue has its normal space.
-6. Close the shop with at least three items queued. Only the next icon and
-   its soul amount should appear beside the item slots, with no count or
-   blue corner patch over the icon. When ready to buy, confirm its border/glow
-   remains. Buy/remove the first item and confirm the icon advances.
-7. Reopen the shop. Confirm the full queue and single top Total Cost box.
-   Toggle Total queue cost in shop and confirm it controls that box.
+The maintainer reported: "Alright tested in game, it works!" on 2026-10-24.
+No in-game test was performed by Codex. See 4x3-test-instructions.txt for
+a repeatable checklist for future changes.

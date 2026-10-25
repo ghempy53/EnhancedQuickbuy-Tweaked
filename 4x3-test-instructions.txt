@@ -1,0 +1,26 @@
+4:3 compatibility test
+
+Keep your 4:3 HUD (pak48_dir.vpk) and replace only Enhanced Quickbuy with
+this pak07_dir.vpk. Do not load the old and new Quickbuy VPKs together.
+
+At 1280x960:
+1. Open the shop. Confirm the Quick Buy and Total Cost cards have their
+   backgrounds/icons and align above the queue, without covering the shop.
+2. Add, reorder, and remove items; fill and scroll a long queue. Check that
+   rows show normal prices without fractions and all buttons still work.
+3. Close the shop. Confirm one next-item icon, its soul counter, and the
+   ready-to-buy glow appear without a count or blue corner patch. Buy or
+   remove the first item and confirm the next icon and amount update.
+4. Confirm the 4:3 HUD's health, abilities, item slots, and shop layout
+   remain usable. Also check the usual widescreen setup for regressions.
+
+Quick price check: an 800-soul item with 300 held souls should show 500
+on the gameplay HUD and 800 in the shop Total Cost box. A queued sale
+priced at 400 contributes an estimated 200, making those amounts 300 and
+600 respectively. Clear the queue and confirm the shop total is zero.
+
+Report the resolution and what passed or failed. If something looks wrong,
+screenshots of both the open shop and the gameplay HUD will help locate it.
+
+The maintainer reported this build working in-game on 2026-10-24.
+This checklist remains available for regression testing of future changes.
