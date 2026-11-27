@@ -19,8 +19,30 @@ on the gameplay HUD and 800 in the shop Total Cost box. A queued sale
 priced at 400 contributes an estimated 200, making those amounts 300 and
 600 respectively. Clear the queue and confirm the shop total is zero.
 
+2- and 3-item versions (variants/2-items, variants/3-items)
+Install one in place of pak07_dir.vpk. Run steps 5-9 at 1280x960 with
+the 4:3 HUD, then again at your usual widescreen resolution without it.
+Queue at least four items:
+5. Close the shop. Confirm the 2-item file shows the next item plus one
+   preview, and the 3-item file shows the next item plus two previews.
+   The previews must not cover item slots, abilities, or other HUD.
+6. Hold 300 souls and queue three different 800-soul items, none of
+   which upgrades another, with no queued sales. From left to right the
+   amounts should read 500, 1300, 2100. The 2-item file shows only 500
+   and 1300. Queue one 800-soul item for sale: the amounts drop by 400.
+7. Buy or remove the first item and confirm the previews shift left.
+   Open the shop, die, or clear the queue and confirm the previews hide.
+8. If Universal Mod Manager is installed, set Items shown to 1 and
+   confirm only the next item remains. Set it to 5 and confirm the count
+   does not exceed the version's 2 or 3 items.
+9. Clear the queue. Queue one owned item for sale, then three items to
+   buy. Note which item the large next-item icon shows and what each
+   preview shows. Report whether the first buy item is missing from
+   the icons. This behavior comes from the original mod and is untested.
+
 Report the resolution and what passed or failed. If something looks wrong,
 screenshots of both the open shop and the gameplay HUD will help locate it.
 
-The maintainer reported this build working in-game on 2026-10-24.
+The maintainer reported the 1-item build (steps 1-4) working in-game on
+2026-10-24. The 2- and 3-item versions (steps 5-9) are not yet tested.
 This checklist remains available for regression testing of future changes.
