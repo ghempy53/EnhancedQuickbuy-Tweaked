@@ -1,6 +1,6 @@
 # EnhancedQuickbuy-Tweaked
 
-A personal customization of the **Enhanced Quickbuy** mod for Deadlock, packaged as a single VPK in 1-, 2-, and 3-item HUD versions. Includes compatibility support for **4x3 Fixes [bytenode ver.] 1.0.3**.
+A personal customization of the [**Enhanced QuickBuy**](https://gamebanana.com/mods/664041) mod for Deadlock by Aminsx, packaged as a single VPK in 1-, 2-, and 3-item HUD versions. Includes compatibility support for **4x3 Fixes [bytenode ver.] 1.0.3**.
 
 [Review and verification notes](REVIEW.txt)
 
@@ -14,7 +14,15 @@ A personal customization of the **Enhanced Quickbuy** mod for Deadlock, packaged
 
 All three have the same filename. Install exactly one. Each version is identical except for how many items appear on the gameplay HUD.
 
-The unmodified original mod is kept in [original/pak04_dir.vpk](original/pak04_dir.vpk) for reference. Do not install it alongside any of these files.
+The game only loads the file if it is named exactly `pak07_dir.vpk`. If your browser saves a second download as `pak07_dir (1).vpk` or similar, rename it before installing. To tell downloaded files apart, compare their sizes:
+
+| Version | Size in bytes |
+| --- | --- |
+| 1 item | 101522 |
+| 2 items | 101554 |
+| 3 items | 101538 |
+
+[REVIEW.txt](REVIEW.txt) lists the SHA-256 of each.
 
 ## What changed
 
@@ -37,7 +45,15 @@ In the 2- and 3-item versions, each extra preview shows the original mod's cumul
 Preview amount = max(0, sum of queued prices through that item − current souls − estimated queued-sale proceeds)
 ```
 
-An upgrade queued after one of its components is counted at the reduced price, as in the Total Cost box. For example, with 300 souls and a queue of 800, 500, and 1250 souls, the HUD shows 500, 1000, and 2250.
+An upgrade queued after one of its components is counted at the reduced price, as in the Total Cost box. This only applies to upgrades in the mod's built-in recipe table, which matches English item names and can fall behind game updates.
+
+For example, suppose you hold 300 souls and queue three different 800-soul items, none of which upgrades another, with no queued sales. From left to right, the HUD shows:
+
+- **1-item version:** 500
+- **2-item version:** 500 and 1300
+- **3-item version:** 500, 1300, and 2100
+
+Queuing an 800-soul item for sale adds an estimated 400 souls, which lowers every amount by 400: 100, 900, and 1700.
 
 Queued-sale proceeds use the original mod's estimate: half of each queued sale item's displayed price, rounded down and counted once. This is an estimate, not a prediction of full-refund windows.
 
@@ -59,8 +75,22 @@ The companion inspected was [4x3 Fixes by bytenode](https://gamebanana.com/mods/
 
 ## Verification status
 
-The current package passed archive integrity checks, Source 2 Viewer verification/decompilation, and **30 mocked integration tests**. There are no duplicate resource paths between this package's five resources and the supplied companion's 18 resources; their combined resource map is identical in either archive order. These checks cover calculations, refresh behavior, panel structure, and selected CSS rules; they do not render Deadlock.
+The 1-item package passed archive integrity checks, Source 2 Viewer verification/decompilation, and **30 mocked integration tests**. There are no duplicate resource paths between this package's five resources and the supplied companion's 18 resources; their combined resource map is identical in either archive order. These checks cover calculations, refresh behavior, panel structure, and selected CSS rules; they do not render Deadlock.
 
 The maintainer reported this compatibility build **working in-game on 2026-10-24** after testing. That confirmation is separate from the local automated checks and does not establish support for every resolution or HUD mod. See [REVIEW.txt](REVIEW.txt) for the artifact hash and verification details.
 
-The 2- and 3-item versions change only one stylesheet rule in that tested build. Their other four resources are byte-identical to the 1-item version. They passed archive and resource-structure checks, plus 672 mocked HUD-visibility scenarios. They **have not been tested in-game yet**.
+The 2- and 3-item versions change only one stylesheet rule in that tested build. Their other four resources are byte-identical to the 1-item version. They passed:
+
+- archive and resource-structure checks;
+- 168 mocked HUD-visibility scenarios each;
+- the price examples above, with and without a queued sale.
+
+They **have not been tested in-game yet**.
+
+The build and test scripts are in [tools/](tools/README.md). `python3 -I tools/build_variants.py --check` reproduces both variants byte-for-byte from the 1-item VPK.
+
+## Credits
+
+[Enhanced QuickBuy](https://gamebanana.com/mods/664041) was created by **Aminsx**. This repository modifies that mod. The unmodified original is not included here; download it from its GameBanana page, which lists its license as [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+
+The 4:3 compatibility work targets [4x3 Fixes by bytenode](https://gamebanana.com/mods/693388). None of its files are included here.
