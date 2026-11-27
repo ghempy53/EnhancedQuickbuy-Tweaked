@@ -1,4 +1,110 @@
-EnhancedQuickbuy-Tweaked — 4:3 HUD compatibility build
+EnhancedQuickbuy-Tweaked — 2- and 3-item HUD variants
+Review date: 2026-11-27
+
+ARTIFACTS
+
+File: variants/2-items/pak07_dir.vpk
+Size: 101554 bytes
+SHA-256:
+df106af4bb4181ce188bc40bb561c2df1af1f72bd2d66dc7db2860d57ba10805
+
+File: variants/3-items/pak07_dir.vpk
+Size: 101538 bytes
+SHA-256:
+353583e1ea75d9a640127e937e771f8ea0ea657ec0d4432a2f2ff709386b576e
+
+Both are built from the in-game-tested 1-item pak07_dir.vpk (8e2e447b...).
+That file is unchanged and remains the 1-item option. Neither variant
+has been tested in-game.
+
+REQUEST
+
+A user asked for the multi-item queue display on the gameplay HUD,
+"ideally at least 3 quickbuy slots." The maintainer requested separate 2-
+and 3-item builds so users can choose 1, 2, or 3.
+
+FINDING
+
+The packaged script is the original mod's script, minus the removed row-cost
+UMM toggle. It still fills preview slots 2-5 (QuickbuyUpcomingPreview2..5)
+up to the saved Items shown value, which defaults to 3. The original
+preview styles also remain. The 1-item build hides every preview with a
+single appended rule:
+  #QuickbuyUpcomingPreviewContainer { visibility: collapse; }
+
+CHANGE
+
+Only that rule and its comment are replaced:
+  2 items: #QuickbuyUpcomingPreview3, 4, 5 { visibility: collapse; }
+  3 items: #QuickbuyUpcomingPreview4, 5 { visibility: collapse; }
+These ID selectors outrank the original .QuickbuyUpcomingPreviewSlot
+.HasPreviewItem reveal rule. The tested #HudMiniContents .QueueSize
+rule already relies on this precedence over a two-class rule.
+
+Each file is therefore a maximum. The Items shown slider can still lower
+the count, and the script hides all previews when it is 1. The default of
+3 shows the full count for both variants. The 1-item build still ignores
+the slider.
+
+Preview icons, soul amounts, affordability border, positions
+(margin-left 474px, 78px per slot), and shop/death/empty hiding come from
+the original mod and are unchanged. Count label and corner badge over the
+next item remain hidden in both variants.
+
+RESOURCE REVIEW: DIFFERENCES FROM 1-ITEM BUILD
+
+  panorama/styles/eqb_quickbuy.vcss_c
+    DATA text differs only in the replaced rule and comment (unified diff
+    checked). The preceding CSS is byte-identical. RED2 and SrMa bytes
+    are identical. DATA CRC32, block sizes/offsets, and file size were
+    rebuilt. SrMa remains 16-byte aligned (20768 / 20752).
+  All other four resources: byte-identical, in the same VPK entry order.
+
+The VPK writer first reproduced the 1-item VPK byte-for-byte from its parsed
+entries. The CSS rebuilder reproduced the unchanged resource byte-for-byte.
+Both outputs were re-parsed, and file CRC32 values plus tree, archive,
+and whole-file MD5s were validated.
+
+LOCAL VERIFICATION
+
+- Node harness ran the packaged script against a mocked Panorama tree.
+  It evaluated the packaged stylesheet's visibility cascade by selector
+  matching, specificity, and source order.
+- 672 scenarios per run covered all four stylesheets: 1-item, 2-item,
+  3-item, and original reference. Each used queue sizes 0-6; Items shown
+  unset or 1-5; and gameplay, shop open, dead, and HUD-items-off states.
+- Results with 6 queued items:
+    1-item:   1 at every slider value
+    2-item:   unset(3)=2, 1=1, 2..5=2
+    3-item:   unset(3)=3, 1=1, 2=2, 3..5=3
+    original: matches the slider value (1-5); confirms the harness
+- Visible previews are always contiguous leading slots. Their soul labels
+  and icons match the corresponding queue entries. With shop open, death,
+  or an empty queue, no previews show. The count label and corner badge
+  remain hidden.
+- Source 2 Viewer was not run for these variants. Validation used the
+  local VPK/resource parsers described above.
+
+LIMITATIONS
+
+Mocked tests do not render Deadlock. Layout, overlap, and clipping are not
+checked. By declared CSS values, the 1-item HUD spans about 390-464px
+from the quickbuy panel's left edge. The 2-item version extends it to
+about 544px, and the 3-item version to about 622px. This matches the
+original mod's default, but has not been checked with the bytenode 4:3
+HUD, whose item and ability bars are not in this package. Hidden slots are still updated by the script, matching the
+original mod's 0.1-second refresh.
+
+ORIGINAL MOD
+
+original/pak04_dir.vpk is the unmodified Enhanced Quickbuy VPK supplied by
+the maintainer. Its SHA-256 matches the original hash recorded below:
+3bfdb4990a849f35f42d91621bff0f01fc66c46e501234b9c3e05514b15218c2
+It is kept for reference only; do not install it alongside pak07_dir.vpk.
+
+========================================================================
+
+EnhancedQuickbuy-Tweaked — 4:3 HUD compatibility build (1-item version)
 Review date: 2026-10-24
 
 ARTIFACT
